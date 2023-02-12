@@ -1,0 +1,363 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>IK分词器源码升级改造实现热更新机制 | 心梦无痕</title><meta name="author" content="鲁黎明"><meta name="copyright" content="鲁黎明"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="IK 分词器源码下载：https:&#x2F;&#x2F;github.com&#x2F;medcl&#x2F;elasticsearch-analysis-ik  本案例以 ES7.6.1 和 Mysql 数据库 5.7 为例进行配置  修改源码步骤1 修改 maven 依赖的 es 版本号 使用工具打开 IK 源码后，打开 pom.xml 文件，修改 elasticsearch 版本号为 7.6.1 1234&lt;propert">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IK分词器源码升级改造实现热更新机制">
+<meta property="og:url" content="http://example.com/2023/02/12/ELK/IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%BA%90%E7%A0%81%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0%E5%AE%9E%E7%8E%B0%E7%83%AD%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="心梦无痕">
+<meta property="og:description" content="IK 分词器源码下载：https:&#x2F;&#x2F;github.com&#x2F;medcl&#x2F;elasticsearch-analysis-ik  本案例以 ES7.6.1 和 Mysql 数据库 5.7 为例进行配置  修改源码步骤1 修改 maven 依赖的 es 版本号 使用工具打开 IK 源码后，打开 pom.xml 文件，修改 elasticsearch 版本号为 7.6.1 1234&lt;propert">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&fm=253&fmt=auto&app=138&f=JPEG.webp">
+<meta property="article:published_time" content="2023-02-12T01:04:43.449Z">
+<meta property="article:modified_time" content="2023-02-12T09:04:51.264Z">
+<meta property="article:author" content="鲁黎明">
+<meta property="article:tag" content="ElasticSearch">
+<meta property="article:tag" content="IK 分词器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&fm=253&fmt=auto&app=138&f=JPEG.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/02/12/ELK/IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%BA%90%E7%A0%81%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0%E5%AE%9E%E7%8E%B0%E7%83%AD%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: 鲁黎明","link":"链接: ","source":"来源: 心梦无痕","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'IK分词器源码升级改造实现热更新机制',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-12 17:04:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/cat.css"><link rel="stylesheet" href="https://npm.elemecdn.com/ethan4116-blog/lib/css/plane_v2.css"><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><div id="myscoll"></div><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="scarecrow"><div class="scarecrow__hat"><div class="scarecrow__ribbon"></div></div><div class="scarecrow__head"><div class="scarecrow__eye"></div><div class="scarecrow__eye"></div><div class="scarecrow__mouth"></div><div class="scarecrow__pipe"></div></div><div class="scarecrow__body"><div class="scarecrow__glove scarecrow__glove--l"></div><div class="scarecrow__sleeve scarecrow__sleeve--l"></div><div class="scarecrow__bow"></div><div class="scarecrow__shirt"></div><div class="scarecrow__coat"></div><div class="scarecrow__waistcoat"></div><div class="scarecrow__sleeve scarecrow__sleeve--r"></div><div class="scarecrow__glove scarecrow__glove--r"></div><div class="scarecrow__coattails"></div><div class="scarecrow__pants"></div></div><div class="scarecrow__arms"></div><div class="scarecrow__leg"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="心梦无痕"><span class="site-name">心梦无痕</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">IK分词器源码升级改造实现热更新机制</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-02-12T01:04:43.449Z" title="发表于 2023-02-12 09:04:43">2023-02-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-02-12T09:04:51.264Z" title="更新于 2023-02-12 17:04:51">2023-02-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ELK/">ELK</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="IK分词器源码升级改造实现热更新机制"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p> IK 分词器源码下载：<a target="_blank" rel="noopener" href="https://github.com/medcl/elasticsearch-analysis-ik">https://github.com/medcl/elasticsearch-analysis-ik</a></p>
+<blockquote>
+<p>本案例以 ES7.6.1 和 Mysql 数据库 5.7 为例进行配置</p>
+</blockquote>
+<h3 id="修改源码步骤"><a href="#修改源码步骤" class="headerlink" title="修改源码步骤"></a>修改源码步骤</h3><p>1 修改 maven 依赖的 es 版本号</p>
+<p>使用工具打开 IK 源码后，打开 pom.xml 文件，修改 elasticsearch 版本号为 7.6.1</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">elasticsearch.version</span>&gt;</span>7.6.1<span class="tag">&lt;/<span class="name">elasticsearch.version</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>2 引入 MySQL 驱动到项目中</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>8.0.30<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>3 开始修改源码</p>
+<p>在项目中找到 Dictionary 类，找到 Dictionary 单例类的初始化方法 initial 方法，在初始化方法中新启动一个线程，用来执行远程词库的热更新，在修改之前，先在 Dictionary 类同目录下新建一个类 HotDictReloadThread，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HotDictReloadThread</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> ESPluginLoggerFactory.getLogger(</span><br><span class="line">        HotDictReloadThread.class.getName()</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initial</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;正在调用 HotDictReloadThread...&quot;</span>);</span><br><span class="line">            Dictionary.getSingleton().reLoadMainDict();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码含义为：获取字典单实例，并执行它的 reLoadMainDict 方法。</p>
+<p>完成上述操作后，就开始修改 initial 方法，改动如下，创建上面新建的类并调用它的 initial 方法，从而执行 DIctionary 类的 reLoadMainDict 方法；改动代码如下，在字典实例初始化完成后新奇一个线程来执行字典的热更新操作；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新启动一个线程用来加载数据库</span></span><br><span class="line">pool.execute(() -&gt; <span class="keyword">new</span> <span class="title class_">HotDictReloadThread</span>().initial());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 词典初始化 由于IK Analyzer的词典采用Dictionary类的静态方法进行词典初始化</span></span><br><span class="line"><span class="comment"> * 只有当Dictionary类被实际调用时，才会开始载入词典， 这将延长首次分词操作的时间 该方法提供了一</span></span><br><span class="line"><span class="comment"> * 个在应用加载阶段就初始化字典的手段</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> Dictionary</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">initial</span><span class="params">(Configuration cfg)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (singleton == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Dictionary.class) &#123;</span><br><span class="line">            <span class="keyword">if</span> (singleton == <span class="literal">null</span>) &#123;</span><br><span class="line"></span><br><span class="line">                singleton = <span class="keyword">new</span> <span class="title class_">Dictionary</span>(cfg);</span><br><span class="line">                singleton.loadMainDict();</span><br><span class="line">                singleton.loadSurnameDict();</span><br><span class="line">                singleton.loadQuantifierDict();</span><br><span class="line">                singleton.loadSuffixDict();</span><br><span class="line">                singleton.loadPrepDict();</span><br><span class="line">                singleton.loadStopWordDict();</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 新启动一个线程用来加载数据库</span></span><br><span class="line">                pool.execute(() -&gt; <span class="keyword">new</span> <span class="title class_">HotDictReloadThread</span>().initial());</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(cfg.isEnableRemoteDict())&#123;</span><br><span class="line">                    <span class="comment">// 建立监控线程</span></span><br><span class="line">                    <span class="keyword">for</span> (String location : singleton.getRemoteExtDictionarys()) &#123;</span><br><span class="line">                        <span class="comment">// 10 秒是初始延迟可以修改的 60是间隔时间 单位秒</span></span><br><span class="line">                        pool.scheduleAtFixedRate(</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">Monitor</span>(location), <span class="number">10</span>, <span class="number">60</span>, TimeUnit.SECONDS);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">for</span> (String location : singleton.getRemoteExtStopWordDictionarys()) </span><br><span class="line">                    &#123;</span><br><span class="line">                        pool.scheduleAtFixedRate(</span><br><span class="line">                            <span class="keyword">new</span> <span class="title class_">Monitor</span>(location), <span class="number">10</span>, <span class="number">60</span>, TimeUnit.SECONDS);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 reLoadMainDict 方法中，可以看到有 2 个方法：</p>
+<ul>
+<li>tmpDict.loadMainDict()    维护的是扩展词库</li>
+<li>tmpDict.loadStopWordDict()维护的是停用词库</li>
+</ul>
+<p>先看对扩展词库的维护。</p>
+<p>在方法 tmpDict.loadMainDict() 中，在最后一行加载远程自定义词库后面新增一个方法 this.loadMySQLExtDict()，用于加载 MySQL 词库，在加载 MySQL 词库之前，需要先准备下 MySQL 相关的配置以及 SQL 语句；在数据库中新建一张表，用户维护扩展词和停用词，表结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `es_lexicon`  (</span><br><span class="line">  `lexicon_id` bigint(8) NOT NULL AUTO_INCREMENT COMMENT &#x27;词库id&#x27;,</span><br><span class="line">  `lexicon_text` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT &#x27;词条关键词&#x27;,</span><br><span class="line">  `lexicon_type` int(1) NOT NULL DEFAULT 0 COMMENT &#x27;0扩展词库 1停用词库&#x27;,</span><br><span class="line">  `lexicon_status` int(1) NOT NULL DEFAULT 0 COMMENT &#x27;词条状态 0正常 1暂停使用&#x27;,</span><br><span class="line">  `del_flag` int(1) NOT NULL DEFAULT 0 COMMENT &#x27;作废标志 0正常 1作废&#x27;,</span><br><span class="line">  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT &#x27;创建时间&#x27;,</span><br><span class="line">  PRIMARY KEY (`lexicon_id`) USING BTREE</span><br><span class="line">) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = &#x27;ES远程扩展词库表&#x27; ROW_FORMAT = Dynamic;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们在项目的根路径的config目录下新建配置文件jdbc-reload.properties，内容如下</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据库地址</span></span><br><span class="line"><span class="attr">jdbc.url</span>=<span class="string">jdbc:mysql://127.0.0.1:3306/test?serverTimezone=GMT&amp;autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;useAffectedRows=true&amp;useSSL=false</span></span><br><span class="line"><span class="comment"># 数据库用户名</span></span><br><span class="line"><span class="attr">jdbc.user</span>=<span class="string">root</span></span><br><span class="line"><span class="comment"># 数据库密码</span></span><br><span class="line"><span class="attr">jdbc.password</span>=<span class="string">123456</span></span><br><span class="line"><span class="comment"># 数据库查询扩展词库sql语句</span></span><br><span class="line"><span class="attr">jdbc.reload.sql</span>=<span class="string">select gel.lexicon_text as word from es_lexicon gel where gel.lexicon_type = 0 and gel.lexicon_status = 0 and gel.del_flag = 0 order by gel.lexicon_id desc </span></span><br><span class="line"><span class="comment"># 数据库查询停用词sql语句</span></span><br><span class="line"><span class="attr">jdbc.reload.stopword.sql</span>=<span class="string">select gel.lexicon_text as word from ges_lexicon gel where gel.lexicon_type = 1 and gel.lexicon_status = 0 and gel.del_flag = 0 order by gel.lexicon_id desc </span></span><br><span class="line"><span class="comment"># 数据库查询间隔时间 每隔10秒请求一次</span></span><br><span class="line"><span class="attr">jdbc.reload.interval</span>=<span class="string">10</span></span><br></pre></td></tr></table></figure>
+
+<p>完成了这些基础配置之后，我们再一同看看关于同步MySql词库的方法loadMySQLExtDict()；代码较长，粘贴如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 从MySql中加载动态词库</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">loadMySQLExtDict</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">Connection</span> <span class="variable">conn</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">  <span class="type">Statement</span> <span class="variable">stmt</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">  <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="type">Path</span> <span class="variable">file</span> <span class="operator">=</span> PathUtils.get(getDictRoot(), <span class="string">&quot;jdbc-reload.properties&quot;</span>);</span><br><span class="line">     props.load(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(file.toFile()));</span><br><span class="line"></span><br><span class="line">     logger.info(<span class="string">&quot;[==========]jdbc-reload.properties&quot;</span>);</span><br><span class="line">     <span class="keyword">for</span>(Object key : props.keySet()) &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;[==========]&quot;</span> + key + <span class="string">&quot;=&quot;</span> + props.getProperty(String.valueOf(key)));</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     logger.info(<span class="string">&quot;[==========]query hot dict from mysql, &quot;</span> + props.getProperty(<span class="string">&quot;jdbc.reload.sql&quot;</span>) + <span class="string">&quot;......&quot;</span>);</span><br><span class="line"><span class="comment">//       Class.forName(props.getProperty(&quot;jdbc.className&quot;));</span></span><br><span class="line">     conn = DriverManager.getConnection(</span><br><span class="line">           props.getProperty(<span class="string">&quot;jdbc.url&quot;</span>),</span><br><span class="line">           props.getProperty(<span class="string">&quot;jdbc.user&quot;</span>),</span><br><span class="line">           props.getProperty(<span class="string">&quot;jdbc.password&quot;</span>));</span><br><span class="line">     stmt = conn.createStatement();</span><br><span class="line">     rs = stmt.executeQuery(props.getProperty(<span class="string">&quot;jdbc.reload.sql&quot;</span>));</span><br><span class="line"></span><br><span class="line">     <span class="keyword">while</span>(rs.next()) &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">theWord</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;word&quot;</span>);</span><br><span class="line">        logger.info(<span class="string">&quot;[==========]正在加载Mysql自定义IK扩展词库词条: &quot;</span> + theWord);</span><br><span class="line">        _MainDict.fillSegment(theWord.trim().toCharArray());</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     Thread.sleep(Integer.valueOf(String.valueOf(props.get(<span class="string">&quot;jdbc.reload.interval&quot;</span>))) * <span class="number">1000</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">     logger.error(<span class="string">&quot;erorr&quot;</span>, e);</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">     <span class="keyword">if</span>(rs != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           rs.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           logger.error(<span class="string">&quot;error&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(stmt != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           stmt.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           logger.error(<span class="string">&quot;error&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(conn != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           conn.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           logger.error(<span class="string">&quot;error&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上述代码中，通过加载配置文件，获取数据库连接，执行扩展词sql，将结果集添加到扩展词库中；</p>
+<p>同理，同步MySql停用词的逻辑也是一样的，这里我直接把代码粘贴过来；停用词方法调用顺序为tmpDict.loadStopWordDict()，在方法后面，新增一个方法调用this.loadMySQLStopwordDict()，新方法中处理通用词逻辑，代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 从MySql中加载远程停用词库</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">loadMySQLStopwordDict</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="type">Connection</span> <span class="variable">conn</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">  <span class="type">Statement</span> <span class="variable">stmt</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">  <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="type">Path</span> <span class="variable">file</span> <span class="operator">=</span> PathUtils.get(getDictRoot(), <span class="string">&quot;jdbc-reload.properties&quot;</span>);</span><br><span class="line">     props.load(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(file.toFile()));</span><br><span class="line"></span><br><span class="line">     logger.info(<span class="string">&quot;[==========]jdbc-reload.properties&quot;</span>);</span><br><span class="line">     <span class="keyword">for</span>(Object key : props.keySet()) &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;[==========]&quot;</span> + key + <span class="string">&quot;=&quot;</span> + props.getProperty(String.valueOf(key)));</span><br><span class="line">     &#125;</span><br><span class="line">     logger.info(<span class="string">&quot;[==========]query hot stopword dict from mysql, &quot;</span> + props.getProperty(<span class="string">&quot;jdbc.reload.stopword.sql&quot;</span>) + <span class="string">&quot;......&quot;</span>);</span><br><span class="line"><span class="comment">//       Class.forName(props.getProperty(&quot;jdbc.className&quot;));</span></span><br><span class="line">     conn = DriverManager.getConnection(</span><br><span class="line">           props.getProperty(<span class="string">&quot;jdbc.url&quot;</span>),</span><br><span class="line">           props.getProperty(<span class="string">&quot;jdbc.user&quot;</span>),</span><br><span class="line">           props.getProperty(<span class="string">&quot;jdbc.password&quot;</span>));</span><br><span class="line">     stmt = conn.createStatement();</span><br><span class="line">     rs = stmt.executeQuery(props.getProperty(<span class="string">&quot;jdbc.reload.stopword.sql&quot;</span>));</span><br><span class="line"></span><br><span class="line">     <span class="keyword">while</span>(rs.next()) &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">theWord</span> <span class="operator">=</span> rs.getString(<span class="string">&quot;word&quot;</span>);</span><br><span class="line">        logger.info(<span class="string">&quot;[==========]正在加载Mysql自定义IK停用词库词条: &quot;</span> + theWord);</span><br><span class="line">        _StopWords.fillSegment(theWord.trim().toCharArray());</span><br><span class="line">     &#125;</span><br><span class="line">     Thread.sleep(Integer.valueOf(String.valueOf(props.get(<span class="string">&quot;jdbc.reload.interval&quot;</span>))) * <span class="number">1000</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">     logger.error(<span class="string">&quot;erorr&quot;</span>, e);</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">     <span class="keyword">if</span>(rs != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           rs.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           logger.error(<span class="string">&quot;error&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(stmt != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           stmt.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           logger.error(<span class="string">&quot;error&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span>(conn != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           conn.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           logger.error(<span class="string">&quot;error&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成这些，整体代码改造完毕；在上述代码中，有很多的地方是可以进一步优化的，比如扩展词和停用词的大量重复代码，以及读取本地配置文件项可以做到只读取一次等，这个大家可以自行优化；</p>
+<p>完成了这些之后，我们就可以开始打包插件了；直接使用maven package命令进行打包，在target/releases/elasticsearch-analysis-ik-7.8.0.zip文件，我们将Mysql驱动mysql-connector-java.jar也放到这个压缩包里面；</p>
+<p><strong>安装插件</strong></p>
+<p>完成上述步骤后，拿到elasticsearch-analysis-ik-7.8.0.zip插件，我们将其放在ES安装目录下的plugins目录下，新建一个ik文件夹，将其解压到ik文件夹下；目录结构大概如下，记得要有MySql驱动mysql-connector-java.jar</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://pic1.zhimg.com/80/v2-73f17eaa457c573eaff75a112faca3b8_720w.webp" alt="img"></p>
+<p>完成上述步骤后，我们就可以启动ES了，在启动过程中，可以看到关于IK热更新MySql词库相关的日志输出；在实际过程中，可能会报很多的异常，下面是我所遇到的一些问题以及解决方案；</p>
+<p><strong>常见问题</strong></p>
+<p><strong>1、异常1</strong>：java.sql.SQLException: Column ‘word’ not found.</p>
+<p>此异常是因为编写sql时，查询的数据库字段需要起别名为 word，修改一下sql即可解决这个问题；</p>
+<p><strong>2、异常2</strong>：Could not create connection to database server</p>
+<p>此异常通常是因为引用的mysql驱动和mysql版本号不一致导致的，只需要替换成对应的版本号即可解决，另外，数据库连接我们不需要再额外的去配置显示加载，即不需要写 Class.forName(props.getProperty(“jdbc.className”));</p>
+<p><strong>3、异常3</strong>：no suitable driver found for jdbc:mysql://…</p>
+<p>此异常我们需要在环境的JDK安装目录的jre\lib\ext目录下添加mysql驱动mysql-connector-java.jar；比如我本地的是C:\Java\jdk_8u_231\jre\lib\ext 目录，服务器上是/data/jdk1.8.0_181/jre/lib/ext</p>
+<p><strong>4、异常4</strong>：AccessControlException: access denied (“java.net.SocketPermission” “127.0.0.1:3306” “connect,resolve”)</p>
+<p>这个异常，我们修改jdk安装路径下的C:\Java\jdk_8u_231\jre\lib\security目录下的文件<strong>java.policy</strong>，在下面新增一行即可解决</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permission java.net.SocketPermission &quot;*&quot;, &quot;connect,resolve&quot;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://pic2.zhimg.com/80/v2-67909acb527460a226b09072e3f6d3bd_720w.webp" alt="img"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">鲁黎明</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/02/12/ELK/IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%BA%90%E7%A0%81%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0%E5%AE%9E%E7%8E%B0%E7%83%AD%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6/">http://example.com/2023/02/12/ELK/IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%BA%90%E7%A0%81%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0%E5%AE%9E%E7%8E%B0%E7%83%AD%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">心梦无痕</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ElasticSearch/">ElasticSearch</a><a class="post-meta__tags" href="/tags/IK-%E5%88%86%E8%AF%8D%E5%99%A8/">IK 分词器</a></div><div class="post_share"><div class="social-share" data-image="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/02/12/ELK/FileBeat%20%E6%97%A5%E5%BF%97%E6%94%B6%E9%9B%86/" title="FileBeat 日志收集"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/analytics-g16ec55044_1280.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">FileBeat 日志收集</div></div></a></div><div class="next-post pull-right"><a href="/2023/02/12/ELK/ELK%20Beats%20%E8%BF%9B%E9%98%B6%E4%B8%93%E9%A2%98/" title="ELK Beats 进阶专题"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/cubes-g7774db9ee_1280.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ELK Beats 进阶专题</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/02/12/ELK/ELK%20+%20FileBeat%20%E6%95%B4%E5%90%88/" title="ELK + FileBeat 整合"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/big-data-gbeadaf748_1920.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-12</div><div class="title">ELK + FileBeat 整合</div></div></a></div><div><a href="/2023/02/12/ELK/ElasticSearch%20%E4%BC%98%E5%8C%96/" title="ElasticSearch 优化"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/tree-g97833b6a8_1280.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-12</div><div class="title">ElasticSearch 优化</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">鲁黎明</div><div class="author-info__description">快乐每一天</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">如果阅读过程中遇到了问题，请及时评论或者留言，看到了会在第一时间给出回复。</div></div><div class="xpand" style="height:200px;"><canvas class="illo" width="800" height="800" style="max-width: 200px; max-height: 200px; touch-action: none; width: 640px; height: 640px;"></canvas></div><script src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/twopeople1.js"></script><script src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/zdog.dist.js"></script><script id="rendered-js" src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/twopeople.js"></script><style>.card-widget.card-announcement {
+margin: 0;
+align-items: center;
+justify-content: center;
+text-align: center;
+}
+canvas {
+display: block;
+margin: 0 auto;
+cursor: move;
+}</style><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%BA%90%E7%A0%81%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.</span> <span class="toc-text">修改源码步骤</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/12/ELK/ElasticSearch%20%E4%BC%98%E5%8C%96/" title="ElasticSearch 优化"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/tree-g97833b6a8_1280.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ElasticSearch 优化"/></a><div class="content"><a class="title" href="/2023/02/12/ELK/ElasticSearch%20%E4%BC%98%E5%8C%96/" title="ElasticSearch 优化">ElasticSearch 优化</a><time datetime="2023-02-12T14:12:06.846Z" title="发表于 2023-02-12 22:12:06">2023-02-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/12/ELK/Google%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8F%92%E4%BB%B6ElasticSearch-head%E5%AE%89%E8%A3%85/" title="Google浏览器插件ElasticSeach-head安装"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/%E8%8A%B1%E6%9C%B5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Google浏览器插件ElasticSeach-head安装"/></a><div class="content"><a class="title" href="/2023/02/12/ELK/Google%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8F%92%E4%BB%B6ElasticSearch-head%E5%AE%89%E8%A3%85/" title="Google浏览器插件ElasticSeach-head安装">Google浏览器插件ElasticSeach-head安装</a><time datetime="2023-02-12T09:55:54.478Z" title="发表于 2023-02-12 17:55:54">2023-02-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/12/ELK/ELK%20+%20FileBeat%20%E6%95%B4%E5%90%88/" title="ELK + FileBeat 整合"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/big-data-gbeadaf748_1920.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ELK + FileBeat 整合"/></a><div class="content"><a class="title" href="/2023/02/12/ELK/ELK%20+%20FileBeat%20%E6%95%B4%E5%90%88/" title="ELK + FileBeat 整合">ELK + FileBeat 整合</a><time datetime="2023-02-12T04:21:31.905Z" title="发表于 2023-02-12 12:21:31">2023-02-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/12/ELK/FileBeat%20+%20LogStash%20%E6%95%B4%E5%90%88/" title="FileBeat + LogStash 整合"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/big-data-gc3961aa73_1920.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FileBeat + LogStash 整合"/></a><div class="content"><a class="title" href="/2023/02/12/ELK/FileBeat%20+%20LogStash%20%E6%95%B4%E5%90%88/" title="FileBeat + LogStash 整合">FileBeat + LogStash 整合</a><time datetime="2023-02-12T02:39:50.022Z" title="发表于 2023-02-12 10:39:50">2023-02-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/12/ELK/LogStash%20%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E4%B8%8E%E8%83%8C%E5%8E%8B%E6%9C%BA%E5%88%B6/" title="LogStash 数据清洗与被压机制"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/big-data-g34dcd7c5d_640.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LogStash 数据清洗与被压机制"/></a><div class="content"><a class="title" href="/2023/02/12/ELK/LogStash%20%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E4%B8%8E%E8%83%8C%E5%8E%8B%E6%9C%BA%E5%88%B6/" title="LogStash 数据清洗与被压机制">LogStash 数据清洗与被压机制</a><time datetime="2023-02-12T02:16:06.881Z" title="发表于 2023-02-12 10:16:06">2023-02-12</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 鲁黎明</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script src="/js/sakura.js"></script><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><script defer data-pjax src="/js/cat.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '1s');
+    arr[i].setAttribute('data-wow-offset', '100');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><!-- hexo injector body_end end -->
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
