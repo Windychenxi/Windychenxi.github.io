@@ -20,6 +20,8 @@
       
         <tags>
             
+            <tag> ELK </tag>
+            
             <tag> ElasticSearch </tag>
             
         </tags>
@@ -38,6 +40,10 @@
       
       
         <tags>
+            
+            <tag> ELK </tag>
+            
+            <tag> ElasticSearch </tag>
             
             <tag> ElasticSearch-head </tag>
             
@@ -177,6 +183,8 @@
       
       
         <tags>
+            
+            <tag> ELK </tag>
             
             <tag> ElasticSearch </tag>
             
