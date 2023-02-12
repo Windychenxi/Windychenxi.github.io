@@ -132,6 +132,8 @@
       
         <tags>
             
+            <tag> ELK </tag>
+            
             <tag> LogStash </tag>
             
         </tags>
@@ -201,7 +203,7 @@
       <link href="/2023/02/12/ELK/ELK%20Beats%20%E8%BF%9B%E9%98%B6%E4%B8%93%E9%A2%98/"/>
       <url>/2023/02/12/ELK/ELK%20Beats%20%E8%BF%9B%E9%98%B6%E4%B8%93%E9%A2%98/</url>
       
-        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本节为ELK（Elasticsearch、LogStash、Kibana）进阶实战</p><h1 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h1><ul><li><a href="http://localhost:4000/2023/02/12/ELK/IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%BA%90%E7%A0%81%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0%E5%AE%9E%E7%8E%B0%E7%83%AD%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6/">IK 分词器源码升级改造实现热更新机制</a></li><li><a href="">FileBeat 日志收集</a></li><li><a href="">LogStash 数据清洗与被压机制</a></li><li><a href="">FileBeat + LogStash 整合</a></li><li><a href="">ELK + FileBeat 整合</a></li><li>LogStash、FileBeat 日志收集详解与背压机制</li><li>Grok 插件与 Mutate 插件使用详解</li><li>ELK 知识点总结与面试题讲解</li></ul>]]></content>
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本节为ELK（Elasticsearch、LogStash、Kibana）进阶实战</p><h1 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h1><ul><li><a href="https://windychenxi.github.io/2023/02/12/ELK/IK%E5%88%86%E8%AF%8D%E5%99%A8%E6%BA%90%E7%A0%81%E5%8D%87%E7%BA%A7%E6%94%B9%E9%80%A0%E5%AE%9E%E7%8E%B0%E7%83%AD%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6/">IK 分词器源码升级改造实现热更新机制</a></li><li><a href="https://windychenxi.github.io/2023/02/12/ELK/FileBeat%20%E6%97%A5%E5%BF%97%E6%94%B6%E9%9B%86/">FileBeat 日志收集</a></li><li><a href="">LogStash 数据清洗与被压机制</a></li><li><a href="https://windychenxi.github.io/2023/02/12/ELK/FileBeat%20+%20LogStash%20%E6%95%B4%E5%90%88/">FileBeat + LogStash 整合</a></li><li><a href="https://windychenxi.github.io/2023/02/12/ELK/ELK%20+%20FileBeat%20%E6%95%B4%E5%90%88/">ELK + FileBeat 整合</a></li><li><a href="https://windychenxi.github.io/2023/02/12/ELK/Google%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8F%92%E4%BB%B6ElasticSearch-head%E5%AE%89%E8%A3%85/">Google 浏览器插件 ElasticSeach-head 安装</a></li><li><a href="https://windychenxi.github.io/2023/02/12/ELK/ElasticSearch%20%E4%BC%98%E5%8C%96/">ElasticSearch 优化</a></li></ul>]]></content>
       
       
       <categories>
