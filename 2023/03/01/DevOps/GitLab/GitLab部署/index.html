@@ -1,0 +1,566 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>GitLab 部署 | 心梦无痕</title><meta name="author" content="鲁黎明"><meta name="copyright" content="鲁黎明"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="GitLab 安装设置 GitLab 的 yum 源（使用清华镜像源安装 GitLab）  GitLab-ce    社区版 GitLab-ee    企业版（收费）  在 &#x2F;etc&#x2F;yum.repos.d&#x2F;下新建gitlab-ce.repo，添加如下配置 12345678910cd &#x2F;etc&#x2F;yum.repos.d&#x2F;vim gitlab-ce.repo [gitlab-ce]name&#x3D;gitla">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitLab 部署">
+<meta property="og:url" content="http://example.com/2023/03/01/DevOps/GitLab/GitLab%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="心梦无痕">
+<meta property="og:description" content="GitLab 安装设置 GitLab 的 yum 源（使用清华镜像源安装 GitLab）  GitLab-ce    社区版 GitLab-ee    企业版（收费）  在 &#x2F;etc&#x2F;yum.repos.d&#x2F;下新建gitlab-ce.repo，添加如下配置 12345678910cd &#x2F;etc&#x2F;yum.repos.d&#x2F;vim gitlab-ce.repo [gitlab-ce]name&#x3D;gitla">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&fm=253&fmt=auto&app=138&f=JPEG.webp">
+<meta property="article:published_time" content="2023-02-28T23:17:27.317Z">
+<meta property="article:modified_time" content="2023-03-01T16:35:09.234Z">
+<meta property="article:author" content="鲁黎明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&fm=253&fmt=auto&app=138&f=JPEG.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/03/01/DevOps/GitLab/GitLab%E9%83%A8%E7%BD%B2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: 鲁黎明","link":"链接: ","source":"来源: 心梦无痕","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'GitLab 部署',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-02 00:35:09'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/cat.css"><link rel="stylesheet" href="https://npm.elemecdn.com/ethan4116-blog/lib/css/plane_v2.css"><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><div id="myscoll"></div><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"></head><body><div id="loading-box"><div class="gear-loader"><div class="gear-loader_overlay"></div><div class="gear-loader_cogs"><div class="gear-loader_cogs__top"><div class="gear-top_part"></div><div class="gear-top_part"></div><div class="gear-top_part"></div><div class="gear-top_hole"></div></div><div class="gear-loader_cogs__left"><div class="gear-left_part"></div><div class="gear-left_part"></div><div class="gear-left_part"></div><div class="gear-left_hole"></div></div><div class="gear-loader_cogs__bottom"><div class="gear-bottom_part"></div><div class="gear-bottom_part"></div><div class="gear-bottom_part"></div><div class="gear-bottom_hole"></div></div></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">16</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="心梦无痕"><span class="site-name">心梦无痕</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">GitLab 部署</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-02-28T23:17:27.317Z" title="发表于 2023-03-01 07:17:27">2023-03-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-01T16:35:09.234Z" title="更新于 2023-03-02 00:35:09">2023-03-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="GitLab 部署"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="GitLab-安装"><a href="#GitLab-安装" class="headerlink" title="GitLab 安装"></a><code>GitLab</code> 安装</h3><h4 id="设置-GitLab-的-yum-源"><a href="#设置-GitLab-的-yum-源" class="headerlink" title="设置 GitLab 的 yum 源"></a>设置 <code>GitLab</code> 的 yum 源</h4><p>（使用清华镜像源安装 <code>GitLab</code>）</p>
+<ul>
+<li><code>GitLab-ce</code>    社区版</li>
+<li><code>GitLab-ee</code>    企业版（收费）</li>
+</ul>
+<p>在 <code>/etc/yum.repos.d/</code>下新建<code>gitlab-ce.repo</code>，添加如下配置</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/yum.repos.d/</span><br><span class="line">vim gitlab-ce.repo</span><br><span class="line"> </span><br><span class="line">[gitlab-ce]</span><br><span class="line">name=gitlab-ce</span><br><span class="line">baseurl=https:<span class="comment">//mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/</span></span><br><span class="line">gpgcheck=<span class="number">0</span></span><br><span class="line">enabled=<span class="number">1</span></span><br><span class="line"> </span><br><span class="line">yum clean all &amp;&amp; yum makecache</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装-GitLab"><a href="#安装-GitLab" class="headerlink" title="安装 GitLab"></a>安装 <code>GitLab</code></h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 直接安装最新版</span><br><span class="line">yum install -y gitlab-ce</span><br></pre></td></tr></table></figure>
+
+<p>出现如下<code>banner</code>，表示安装成功</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301223719822.png" alt="image-20230301223719822"></p>
+<h4 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl disable firewalld</span><br><span class="line">setenfore <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="修改GitLab配置"><a href="#修改GitLab配置" class="headerlink" title="修改GitLab配置"></a>修改<code>GitLab</code>配置</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/gitlab/gitlab.rb</span><br><span class="line">    </span><br><span class="line"># 修改 IP, 端口任意设置</span><br><span class="line">external_url <span class="string">&#x27;http://192.168.10.161:9091&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="重载配置文件"><a href="#重载配置文件" class="headerlink" title="重载配置文件"></a>重载配置文件</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl reconfigure</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong></p>
+<p>修改好配置文件后，要使用 <code>gitlab-ctl reconfigure</code> 命令重载一下配置文件，否则不生效即可启动<code>Gitlab</code>。注意，启动过程较长，需要耐心等待。</p>
+</blockquote>
+<p>查看<code>GitLab</code>状态</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost .ssh]<span class="meta"># gitlab-ctl status</span></span><br><span class="line">run: alertmanager: (pid <span class="number">3975</span>) <span class="number">3077</span>s; run: log: (pid <span class="number">1698</span>) <span class="number">4041</span>s</span><br><span class="line">run: gitaly: (pid <span class="number">3983</span>) <span class="number">3077</span>s; run: log: (pid <span class="number">1714</span>) <span class="number">4043</span>s</span><br><span class="line">run: gitlab-exporter: (pid <span class="number">3994</span>) <span class="number">3076</span>s; run: log: (pid <span class="number">1688</span>) <span class="number">4041</span>s</span><br><span class="line">run: gitlab-kas: (pid <span class="number">3996</span>) <span class="number">3076</span>s; run: log: (pid <span class="number">1693</span>) <span class="number">4041</span>s</span><br><span class="line">run: gitlab-workhorse: (pid <span class="number">4002</span>) <span class="number">3075</span>s; run: log: (pid <span class="number">1713</span>) <span class="number">4043</span>s</span><br><span class="line">run: logrotate: (pid <span class="number">4009</span>) <span class="number">3075</span>s; run: log: (pid <span class="number">1722</span>) <span class="number">4043</span>s</span><br><span class="line">run: nginx: (pid <span class="number">4015</span>) <span class="number">3074</span>s; run: log: (pid <span class="number">1686</span>) <span class="number">4041</span>s</span><br><span class="line">run: node-exporter: (pid <span class="number">4022</span>) <span class="number">3074</span>s; run: log: (pid <span class="number">1715</span>) <span class="number">4043</span>s</span><br><span class="line">run: postgres-exporter: (pid <span class="number">4031</span>) <span class="number">3073</span>s; run: log: (pid <span class="number">1708</span>) <span class="number">4041</span>s</span><br><span class="line">run: postgresql: (pid <span class="number">4036</span>) <span class="number">3073</span>s; run: log: (pid <span class="number">1691</span>) <span class="number">4041</span>s</span><br><span class="line">run: prometheus: (pid <span class="number">4121</span>) <span class="number">3073</span>s; run: log: (pid <span class="number">1703</span>) <span class="number">4041</span>s</span><br><span class="line">run: puma: (pid <span class="number">4127</span>) <span class="number">3072</span>s; run: log: (pid <span class="number">1702</span>) <span class="number">4041</span>s</span><br><span class="line">run: redis: (pid <span class="number">4132</span>) <span class="number">3072</span>s; run: log: (pid <span class="number">1687</span>) <span class="number">4041</span>s</span><br><span class="line">run: redis-exporter: (pid <span class="number">4140</span>) <span class="number">3071</span>s; run: log: (pid <span class="number">1716</span>) <span class="number">4043</span>s</span><br><span class="line">run: sidekiq: (pid <span class="number">4145</span>) <span class="number">3071</span>s; run: log: (pid <span class="number">1701</span>) <span class="number">4041</span>s</span><br></pre></td></tr></table></figure>
+
+<h3 id="GitLab安装目录"><a href="#GitLab安装目录" class="headerlink" title="GitLab安装目录"></a><code>GitLab</code>安装目录</h3><ul>
+<li><p><code>gitlab</code>组件日志路径：<code>/var/log/gitlab</code></p>
+</li>
+<li><p><code>gitlab</code>配置路径：<code>/etc/gitlab/</code>  路径下有<code>gitlab.rb</code>配置文件</p>
+</li>
+<li><p>应用代码和组件依赖程序：<code>/opt/gitlab</code></p>
+</li>
+<li><p>各个组件存储路径： <code>/var/opt/gitlab/</code></p>
+</li>
+<li><p>仓库默认存储路径   <code>/var/opt/gitlab/git-data/repositories</code></p>
+</li>
+<li><p>版本文件备份路径：<code>/var/opt/gitlab/backups/</code></p>
+</li>
+<li><p><code>nginx</code>安装路径：<code>/var/opt/gitlab/nginx/</code></p>
+</li>
+</ul>
+<h3 id="GitLab常用命令汇总"><a href="#GitLab常用命令汇总" class="headerlink" title="GitLab常用命令汇总"></a><code>GitLab</code>常用命令汇总</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># 查看服务状态</span><br><span class="line">gitlab-ctl status</span><br><span class="line">使用控制台实时查看日志</span><br><span class="line"># 查看所有的logs; 按 Ctrl-C 退出</span><br><span class="line">gitlab-ctl tail</span><br><span class="line"># 拉取/var/log/gitlab下子目录的日志</span><br><span class="line">gitlab-ctl tail gitlab-rails</span><br><span class="line"># 拉取某个指定的日志文件</span><br><span class="line">gitlab-ctl tail nginx/gitlab_error.log</span><br><span class="line">#启动关闭gitlab	</span><br><span class="line">gitlab-ctl start      </span><br><span class="line">gitlab-ctl stop                                #停止            </span><br><span class="line">gitlab-ctl status                              #查看状态</span><br><span class="line">gitlab-ctl restart                             #重启</span><br><span class="line">gitlab-ctl reconfigure			   #更新配置文件</span><br><span class="line">gitlab-ctl help                                #帮助</span><br><span class="line">gitlab-rake gitlab:check SANITIZE=<span class="literal">true</span> --trace	检查gitlab</span><br><span class="line"><span class="meta">#gitlab 默认的日志文件存放在/var/log/gitlab 目录下</span></span><br><span class="line">gitlab-ctl tail                                #查看所有日志</span><br><span class="line">#禁止 Gitlab 开机自启动</span><br><span class="line">systemctl disable gitlab-runsvdir.service </span><br><span class="line">#启用 Gitlab 开机自启动</span><br></pre></td></tr></table></figure>
+
+<h3 id="GitLab访问测试"><a href="#GitLab访问测试" class="headerlink" title="GitLab访问测试"></a><code>GitLab</code>访问测试</h3><p>浏览器输入服务器IP：<code>192.168.10.161:9091</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301071747568.png" alt="image-20230301071747568"></p>
+<h3 id="配置默认访问密码"><a href="#配置默认访问密码" class="headerlink" title="配置默认访问密码"></a>配置默认访问密码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost yum.repos.d]<span class="meta"># cd /opt/gitlab/bin</span></span><br><span class="line">[root@localhost bin]<span class="meta"># gitlab-rails console -e production</span></span><br><span class="line">--------------------------------------------------------------------------------</span><br><span class="line"> Ruby:         ruby <span class="number">2.7</span><span class="number">.7</span>p221 (<span class="number">2022</span><span class="number">-11</span><span class="number">-24</span> revision <span class="number">168</span>ec2b1e5) [x86_64-linux]</span><br><span class="line"> GitLab:       <span class="number">15.9</span><span class="number">.1</span> (de8f6619031) FOSS</span><br><span class="line"> GitLab Shell: <span class="number">14.17</span><span class="number">.0</span></span><br><span class="line"> PostgreSQL:   <span class="number">13.8</span></span><br><span class="line">------------------------------------------------------------[ booted in <span class="number">16.73</span>s ]</span><br><span class="line"><span class="function">Loading production <span class="title">environment</span> <span class="params">(Rails <span class="number">6.1</span><span class="number">.7</span><span class="number">.2</span>)</span></span></span><br><span class="line"><span class="function"><span class="title">irb</span><span class="params">(main)</span>:<span class="number">001</span>:<span class="number">0</span>&gt; u=</span>User.<span class="built_in">where</span>(id:<span class="number">1</span>).first</span><br><span class="line">=&gt; #&lt;User id:<span class="number">1</span> @root&gt;</span><br><span class="line"><span class="built_in">irb</span>(main):<span class="number">013</span>:<span class="number">0</span>&gt; u.password=<span class="string">&#x27;20230301&#x27;</span></span><br><span class="line">=&gt; <span class="string">&quot;20230301&quot;</span></span><br><span class="line"><span class="built_in">irb</span>(main):<span class="number">014</span>:<span class="number">0</span>&gt; u.password_confirmation=<span class="string">&#x27;20230301&#x27;</span></span><br><span class="line">=&gt; <span class="string">&quot;20230301&quot;</span></span><br><span class="line"><span class="built_in">irb</span>(main):<span class="number">015</span>:<span class="number">0</span>&gt; u.save!</span><br><span class="line">=&gt; <span class="literal">true</span></span><br><span class="line"><span class="built_in">irb</span>(main):<span class="number">016</span>:<span class="number">0</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>出现<code>true</code>说明设置成功！</p>
+<h3 id="管理员登录"><a href="#管理员登录" class="headerlink" title="管理员登录"></a>管理员登录</h3><p>使用<code>root/20230301</code>登录</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301072703920.png" alt="image-20230301072703920"></p>
+<p>使用登录页面<code>Register now</code>注册的用户<code>luliming</code>，需要管理员通过</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301072831040.png" alt="image-20230301072831040"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301072926029.png" alt="image-20230301072926029"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301073106237.png" alt="image-20230301073106237"></p>
+<h3 id="设置语言"><a href="#设置语言" class="headerlink" title="设置语言"></a>设置语言</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301215109700.png" alt="image-20230301215109700"></p>
+<p>重启生效</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl restart</span><br></pre></td></tr></table></figure>
+
+<p>重启后需要等待一下才能正常访问</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301215444237.png" alt="image-20230301215444237"></p>
+<h3 id="关闭登录页自动注册"><a href="#关闭登录页自动注册" class="headerlink" title="关闭登录页自动注册"></a>关闭登录页自动注册</h3><p>在企业生产环境中，我们一般由项目负责人负责创建用户并分配权限，一般禁止员工私自注册用户，以防给项目开发工作带来安全性上的风险。为了避免员工自动注册，我们一般会禁止Gitlab的自动注册功能。</p>
+<p>使用管理员登录，取消勾选 “已启动注册功能”</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301215728866.png" alt="image-20230301215728866"></p>
+<h3 id="GitLab登录免密认证"><a href="#GitLab登录免密认证" class="headerlink" title="GitLab登录免密认证"></a><code>GitLab</code>登录免密认证</h3><p>Gitlab的登录免密验证，配置完成后，可以使得我们的Gitlab自动执行Git命令而无需登录，对于脚本的编写以及其他项目<em><strong>（如Jenkins）的运用这一步是必须的。</strong></em></p>
+<p><strong>首先</strong>，在想要进行验证的设备上执行命令：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="meta"># ssh-keygen                            # 创建秘钥对文件</span></span><br><span class="line">Generating <span class="keyword">public</span>/<span class="keyword">private</span> rsa key pair.</span><br><span class="line"><span class="function">Enter file in which to save the <span class="title">key</span> <span class="params">(/root/.ssh/id_rsa)</span>:  # 默认公钥和私钥路径</span></span><br><span class="line"><span class="function">Created directory <span class="string">&#x27;/root/.ssh&#x27;</span>.</span></span><br><span class="line"><span class="function">Enter passphrase (empty for no passphrase):               # 设置密码</span></span><br><span class="line"><span class="function">Enter same passphrase again:</span></span><br><span class="line"><span class="function">Your identification has been saved in /root/.ssh/id_rsa.</span></span><br><span class="line"><span class="function">Your public key has been saved in /root/.ssh/id_rsa.pub.  # 生成公钥和私钥文件</span></span><br><span class="line"><span class="function">The key fingerprint is:</span></span><br><span class="line"><span class="function">SHA256:tBgLyuEZzngggNWE8xwrAg+UmJvOdKp1OMDepWid3s4 root@localhost.localdomain</span></span><br><span class="line"><span class="function">The key<span class="string">&#x27;s randomart image is:</span></span></span><br><span class="line"><span class="string"><span class="function">+---[RSA 2048]----+</span></span></span><br><span class="line"><span class="string"><span class="function">|=+o+.            |</span></span></span><br><span class="line"><span class="string"><span class="function">|B.o o            |</span></span></span><br><span class="line"><span class="string"><span class="function">|==o+.o. .        |</span></span></span><br><span class="line"><span class="string"><span class="function">|*Xo*+o = .       |</span></span></span><br><span class="line"><span class="string"><span class="function">|*o#o+ o S        |                                       # 算法秘钥</span></span></span><br><span class="line"><span class="string"><span class="function">| O+=.            |</span></span></span><br><span class="line"><span class="string"><span class="function">|o..o.            |</span></span></span><br><span class="line"><span class="string"><span class="function">|.  ...           |</span></span></span><br><span class="line"><span class="string"><span class="function">|    .E           |</span></span></span><br><span class="line"><span class="string"><span class="function">+----[SHA256]-----+</span></span></span><br></pre></td></tr></table></figure>
+
+<p>确认生成的秘钥文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="meta"># pwd</span></span><br><span class="line">/root</span><br><span class="line">[root@localhost ~]<span class="meta"># cd ./.ssh/</span></span><br><span class="line">[root@localhost .ssh]<span class="meta"># ll</span></span><br><span class="line">total <span class="number">8</span></span><br><span class="line">-rw-------. <span class="number">1</span> root root <span class="number">1766</span> Mar  <span class="number">1</span> <span class="number">06</span>:<span class="number">02</span> id_rsa</span><br><span class="line">-rw-r--r--. <span class="number">1</span> root root  <span class="number">408</span> Mar  <span class="number">1</span> <span class="number">06</span>:<span class="number">02</span> id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<p>查看本设备的公钥</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost .ssh]<span class="meta"># cat /root/.ssh/id_rsa.pub</span></span><br><span class="line">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtbZqVXqUXkqCMav/Nk5xZXUVoz6sFbvoSSWgHn/rHH/<span class="number">5</span>m2Y9UL5h7s2ovZQKI0v84glCeGivvlGUbupFW7lQrY+AZo5NncgLryTLXf1C/Gain0PnWUQ5ZioMgTsW5ZLumbKASLjw7dZvii+Iz8BCQ9gY8I+DaT6G4t/ayokDNd8zVsjyLGEzggIlWFI9oBbitzwL3GFB4hp1Pew+LOVlz6xXTajzhMvbiUrK4npXot1GY2JU9Kw+i6Wu2qIzWcKZBKgCg92MFl0f2zPLD5AgB43UBeAhh888myixdaxk2HwtRZ/k5nlTjbGIyErFUMU/b9gHebF6W+KhViaseP0Q/ root@localhost.localdomain</span><br></pre></td></tr></table></figure>
+
+<p>复制公钥，在<code>GitLab</code>管理页面上填写SSH秘钥</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301220645298.png" alt="image-20230301220645298"></p>
+<p>添加完成</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301220752417.png" alt="image-20230301220752417"></p>
+<h3 id="GitLab创建群组"><a href="#GitLab创建群组" class="headerlink" title="GitLab创建群组"></a><code>GitLab</code>创建群组</h3><p>如下页面，点击创建群组</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301220939849.png" alt="image-20230301220939849"></p>
+<p>填写群组信息</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301221247197.png" alt="image-20230301221247197"></p>
+<p>群组创建成功，点击配置图标</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301221404662.png" alt="image-20230301221404662"></p>
+<p>邀请成员</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301221726038.png" alt="image-20230301221726038"></p>
+<h3 id="GitLab创建项目"><a href="#GitLab创建项目" class="headerlink" title="GitLab创建项目"></a><code>GitLab</code>创建项目</h3><p>进入项目页面，创建空白项目</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301221900956.png" alt="image-20230301221900956"></p>
+<p>填写项目名称，并选择群组 <code>butterfly</code></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301222029347.png" alt="image-20230301222029347"></p>
+<p>项目创建成功</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301222128474.png" alt="image-20230301222128474"></p>
+<h3 id="GitLab创建用户"><a href="#GitLab创建用户" class="headerlink" title="GitLab创建用户"></a><code>GitLab</code>创建用户</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301222222698.png" alt="image-20230301222222698"></p>
+<p>填写用户信息</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301222638069.png" alt="image-20230301222638069"></p>
+<p>用户创建成功！</p>
+<h3 id="上传代码到仓库"><a href="#上传代码到仓库" class="headerlink" title="上传代码到仓库"></a>上传代码到仓库</h3><p>首次使用<code>git</code>，需要设置全局用户名和邮箱设置</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301231546728.png" alt="image-20230301231546728"></p>
+<p>在命令行或终端中使用下面的命令可以设置git自己的名字和电子邮件。这是因为Git是分布式版本控制系统，所以，每个机器都必须自报家门：你的名字和Email地址。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@jenkins ~]<span class="meta"># git config --global user.name <span class="string">&quot;luliming&quot;</span></span></span><br><span class="line">[root@jenkins ~]<span class="meta"># git config --global user.email <span class="string">&quot;1622862463@qq.com&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>查看配置</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@jenkins ~]<span class="meta"># git config --list</span></span><br><span class="line">user.name=luliming</span><br><span class="line">user.email=<span class="number">1622862463</span>@qq.com</span><br></pre></td></tr></table></figure>
+
+<p>这里以<code>Jenkins</code>服务器为例</p>
+<p>在<code>/home/luliming/gitlab_test</code>下，执行如下命令，将测试文本提交至远程<code>GitLab</code>仓库</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@jenkins gitlab_test]<span class="meta"># git init</span></span><br><span class="line">Initialized empty Git repository in /home/luliming/gitlab_test/.git/</span><br><span class="line">[root@jenkins gitlab_test]<span class="meta"># touch test.txt</span></span><br><span class="line">[root@jenkins gitlab_test]<span class="meta"># git add test.txt</span></span><br><span class="line">[root@jenkins gitlab_test]<span class="meta"># git commit -m <span class="string">&quot;测试文本&quot;</span></span></span><br><span class="line">[<span class="built_in">master</span> (root-commit) eaf58b3] 测试文本</span><br><span class="line"> <span class="number">1</span> file changed, <span class="number">0</span> <span class="built_in">insertions</span>(+), <span class="number">0</span> <span class="built_in">deletions</span>(-)</span><br><span class="line"> create mode <span class="number">100644</span> test.txt</span><br><span class="line">[root@jenkins gitlab_test]<span class="meta"># git push -u origin master</span></span><br><span class="line">Username <span class="keyword">for</span> <span class="string">&#x27;http://192.168.10.161:9091&#x27;</span>: luliming</span><br><span class="line">Password <span class="keyword">for</span> <span class="string">&#x27;http://luliming@192.168.10.161:9091&#x27;</span>:</span><br><span class="line">Counting objects: <span class="number">3</span>, done.</span><br><span class="line">Writing objects: <span class="number">100</span>% (<span class="number">3</span>/<span class="number">3</span>), <span class="number">221</span> bytes | <span class="number">0</span> bytes/s, done.</span><br><span class="line">Total <span class="number">3</span> (delta <span class="number">0</span>), reused <span class="number">0</span> (delta <span class="number">0</span>)</span><br><span class="line">remote:</span><br><span class="line">remote: To create a merge request <span class="keyword">for</span> master, visit:</span><br><span class="line">remote:   http:<span class="comment">//192.168.10.161:9091/butterfly/gitlab-test/-/merge_requests/new?merge_request%5Bsource_branch%5D=master</span></span><br><span class="line">remote:</span><br><span class="line">To http:<span class="comment">//192.168.10.161:9091/butterfly/gitlab-test.git</span></span><br><span class="line"> * [<span class="keyword">new</span> branch]      master -&gt; master</span><br><span class="line">Branch master set up to track remote branch master from origin.</span><br><span class="line">[root@jenkins gitlab_test]#</span><br></pre></td></tr></table></figure>
+
+<p>可以看到已经提交成功！</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/image-20230301235052897.png" alt="image-20230301235052897"></p>
+<h3 id="Git-命令行常用指令的使用"><a href="#Git-命令行常用指令的使用" class="headerlink" title="Git 命令行常用指令的使用"></a>Git 命令行常用指令的使用</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git status</code></td>
+<td>上次提交后是否对文件再做了修改项目</td>
+</tr>
+<tr>
+<td><code>git add .</code></td>
+<td>添加所有的变动</td>
+</tr>
+<tr>
+<td><code>git checkout -b</code> 文件夹名称</td>
+<td>创建本地分支并切换分支 git checkout -b pr/ffr</td>
+</tr>
+<tr>
+<td><code>git commit -m</code> “描述”</td>
+<td>提交修改 git commit -m “修改什么”</td>
+</tr>
+<tr>
+<td><code>git merge origin/develop</code> “本地分支”</td>
+<td>合并origin/develop上别人所做的修改到自己的本地分支 git merge origin/develop pr/ffr</td>
+</tr>
+<tr>
+<td><code>git push origin</code> “本地分支”</td>
+<td>合并origin/develop上别人所做的修改到自己的本地分支 git merge origin/develop pr/ffr</td>
+</tr>
+<tr>
+<td><code>git rebase -i</code> 编号</td>
+<td>合并多次提交，将前几次的提交合并为一次</td>
+</tr>
+<tr>
+<td><code>git checkout</code> 分支名</td>
+<td>切换分支 git checkout pr/FFR-color git cherckout develop</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>更新当前分支的状态</td>
+</tr>
+<tr>
+<td><code>git branch</code></td>
+<td>列出本地分支</td>
+</tr>
+<tr>
+<td><code>git branch -a</code></td>
+<td>列出本地分支与远程分支</td>
+</tr>
+<tr>
+<td><code>git branch -D</code> 分支名</td>
+<td>删除分支（目前仅用于删除本地分支）</td>
+</tr>
+<tr>
+<td><code>git remote -v</code></td>
+<td>可以查看远程仓库信息</td>
+</tr>
+<tr>
+<td><code>git branch</code> 分支名</td>
+<td>仅仅创建 一个新分支，并不会自动切换到新分支中去</td>
+</tr>
+<tr>
+<td><code>git rebase --abort</code></td>
+<td>退出git rebase</td>
+</tr>
+<tr>
+<td><code>git reset</code> 提交编号</td>
+<td>git rebase -i 提交编号，之后出现错误，可以回退到之前未合并时的日志状态</td>
+</tr>
+<tr>
+<td><code>git commit --amend -m</code> “描述”</td>
+<td>修改上一次的提交的描述</td>
+</tr>
+<tr>
+<td><code>git stash</code></td>
+<td>暂存上一次的修改，准备切换到其他的分支</td>
+</tr>
+<tr>
+<td><code>git stash pop</code></td>
+<td>还原上一次的修改，将暂存的修改加入到新的分支</td>
+</tr>
+</tbody></table>
+<h4 id="提交及修改操作"><a href="#提交及修改操作" class="headerlink" title="提交及修改操作"></a>提交及修改操作</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>释义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>git add</code></td>
+<td>添加文件到暂存区</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>查看仓库当前的状态，显示有变更的文件。</td>
+</tr>
+<tr>
+<td><code>git diff</code></td>
+<td>比较文件的不同，即暂存区和工作区的差异。</td>
+</tr>
+<tr>
+<td><code>git commit</code></td>
+<td>提交暂存区到本地仓库。</td>
+</tr>
+<tr>
+<td><code>git reset</code></td>
+<td>回退版本。</td>
+</tr>
+<tr>
+<td><code>git rm</code></td>
+<td>删除工作区文件。</td>
+</tr>
+<tr>
+<td><code>git mv</code></td>
+<td>移动或重命名工作区文件。</td>
+</tr>
+</tbody></table>
+<h3 id="GitLab数据备份"><a href="#GitLab数据备份" class="headerlink" title="GitLab数据备份"></a><code>GitLab</code>数据备份</h3><p><code>GitLab</code>创建备份</p>
+<h4 id="手动备份"><a href="#手动备份" class="headerlink" title="手动备份"></a>手动备份</h4><p>使用一条命令即可创建完整的<code>GitLab</code>备份</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-rake gitlab:backup:create</span><br></pre></td></tr></table></figure>
+
+<p>使用命令，会在<code>/var/opt/gitlab/backups</code>目录下创建一个压缩包，这个压缩包就是<code>GitLab</code>整个完整部分。</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# gitlab-rake gitlab:backup:create</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">33</span> UTC -- Dumping database ...</span><br><span class="line">Dumping PostgreSQL database gitlabhq_production ... [DONE]</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">39</span> UTC -- Dumping database ... done</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">39</span> UTC -- Dumping repositories ...</span><br><span class="line">&#123;<span class="string">&quot;command&quot;</span>:<span class="string">&quot;create&quot;</span>,<span class="string">&quot;gl_project_path&quot;</span>:<span class="string">&quot;gitlab-instance-77ad3362/Monitoring&quot;</span>,<span class="string">&quot;level&quot;</span>:<span class="string">&quot;info&quot;</span>,<span class="string">&quot;msg&quot;</span>:<span class="string">&quot;started create&quot;</span>,<span class="string">&quot;relative_path&quot;</span>:<span class="string">&quot;@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b.git&quot;</span>,<span class="string">&quot;storage_name&quot;</span>:<span class="string">&quot;default&quot;</span>,<span class="string">&quot;time&quot;</span>:<span class="string">&quot;2023-03-01T16:09:40.183Z&quot;</span>&#125;</span><br><span class="line">...</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Dumping repositories ... done</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Dumping uploads ...</span><br><span class="line">...</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Cleaning up /<span class="keyword">var</span>/opt/gitlab/backups/packages<span class="variable">.tar</span><span class="variable">.gz</span></span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Deleting tar staging files ... done</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Deleting backups/tmp ...</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Deleting backups/tmp ... done</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Warning: Your gitlab<span class="variable">.rb</span> <span class="keyword">and</span> gitlab-secrets<span class="variable">.json</span> files contain sensitive data</span><br><span class="line"><span class="keyword">and</span> are <span class="keyword">not</span> included in <span class="keyword">this</span> backup. You will need these files to restore a backup.</span><br><span class="line">Please back them up manually.</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">16</span>:<span class="number">09</span>:<span class="number">40</span> UTC -- Backup <span class="number">1677686973_2023_03_01_15</span><span class="variable">.9</span><span class="variable">.1</span> is done.</span><br><span class="line"><span class="number">2023</span>-<span class="number">03</span>-<span class="number">01</span> <span class="number">08</span>:<span class="number">09</span>:<span class="number">40</span> -<span class="number">0800</span> -- Deleting backup <span class="keyword">and</span> restore lock file</span><br><span class="line">[root@localhost ~]#</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong></p>
+<p>可以开到一条警告信息</p>
+<p><code>2023-03-01 16:09:40 UTC -- Warning: Your gitlab.rb and gitlab-secrets.json files contain sensitive data and are not included in this backup. You will need these files to restore a backup.</code></p>
+<p>表示 <strong>gitlab.rb</strong> 和 <strong>gitlab-secrets.json</strong> 两个文件包含敏感信息。未被备份到备份文件中。需要手动备份。</p>
+<ol>
+<li><code>/etc/gitlab/gitlab.rb</code> 配置文件须备份</li>
+<li><code>/var/opt/gitlab/nginx/conf</code>  nginx配置文件</li>
+<li><code>/etc/postfix/main.cfpostfix</code>  邮件配置备份</li>
+</ol>
+</blockquote>
+<h5 id="更改备份目录"><a href="#更改备份目录" class="headerlink" title="更改备份目录"></a>更改备份目录</h5><p>可以通过<code>/etc/gitlab/gitlab.rb</code>配置文件来修改默认存放备份文件的目录</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gitlab_rails[<span class="string">&#x27;backup_path&#x27;</span>] = <span class="string">&quot;/home/gitlab-backup&quot;</span></span><br><span class="line">    </span><br><span class="line">#指定备份后数据存放的路径、权限、时间配置</span><br><span class="line">gitlab_rails[<span class="string">&#x27;manage_backup_path&#x27;</span>] = <span class="literal">true</span>                  开启备份功能</span><br><span class="line">gitlab_rails[<span class="string">&#x27;backup_path&#x27;</span>] = <span class="string">&quot;/home/gitlab-backup&quot;</span>        指定备份的路径</span><br><span class="line">gitlab_rails[<span class="string">&#x27;backup_archive_permissions&#x27;</span>] = <span class="number">0644</span>          备份文件的权限</span><br><span class="line">gitlab_rails[<span class="string">&#x27;backup_keep_time&#x27;</span>] = <span class="number">7776000</span>                 备份保留时间</span><br></pre></td></tr></table></figure>
+
+<h5 id="重载配置"><a href="#重载配置" class="headerlink" title="重载配置"></a>重载配置</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-ctl reconfigure</span><br></pre></td></tr></table></figure>
+
+<h5 id="创建备份目录并授权"><a href="#创建备份目录并授权" class="headerlink" title="创建备份目录并授权"></a>创建备份目录并授权</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Chown -R git:git gitlab-backup</span><br></pre></td></tr></table></figure>
+
+<p>现在可以使用命令创建完整的<code>GitLab</code>备份</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitlab-rake gitlab:backup:create</span><br></pre></td></tr></table></figure>
+
+<h4 id="GitLab自动备份"><a href="#GitLab自动备份" class="headerlink" title="GitLab自动备份"></a><code>GitLab</code>自动备份</h4><p>使用<code>crontab -e</code>添加相应的任务</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="meta"># crontab -e</span></span><br><span class="line">    </span><br><span class="line"># 添加相应的任务(凌晨<span class="number">2</span>点执行备份)</span><br><span class="line"><span class="number">0</span> <span class="number">2</span> * * * /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong></p>
+<p>环境变量<code>CRON=1</code>的作用是如果没有任何错误发生时， 抑制备份脚本的所有进度输出</p>
+</blockquote>
+<p>查看周期性计划任务</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="meta"># crontab -l</span></span><br><span class="line"><span class="number">0</span> <span class="number">2</span> * * * /opt/gitlab/bin/gitlab-rake gitlab:backup:create CRON=<span class="number">1</span></span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">鲁黎明</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/01/DevOps/GitLab/GitLab%E9%83%A8%E7%BD%B2/">http://example.com/2023/03/01/DevOps/GitLab/GitLab%E9%83%A8%E7%BD%B2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">心梦无痕</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/02/28/DevOps/Jenkins/Jenkins%E9%83%A8%E7%BD%B2/" title="Jenkins 详细部署"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Jenkins 详细部署</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">鲁黎明</div><div class="author-info__description">快乐每一天</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">16</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">如果阅读过程中遇到了问题，请及时评论或者留言，看到了会在第一时间给出回复。</div></div><div class="xpand" style="height:200px;"><canvas class="illo" width="800" height="800" style="max-width: 200px; max-height: 200px; touch-action: none; width: 640px; height: 640px;"></canvas></div><script src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/twopeople1.js"></script><script src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/zdog.dist.js"></script><script id="rendered-js" src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/twopeople.js"></script><style>.card-widget.card-announcement {
+margin: 0;
+align-items: center;
+justify-content: center;
+text-align: center;
+}
+canvas {
+display: block;
+margin: 0 auto;
+cursor: move;
+}</style><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab-%E5%AE%89%E8%A3%85"><span class="toc-number">1.</span> <span class="toc-text">GitLab 安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE-GitLab-%E7%9A%84-yum-%E6%BA%90"><span class="toc-number">1.1.</span> <span class="toc-text">设置 GitLab 的 yum 源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-GitLab"><span class="toc-number">1.2.</span> <span class="toc-text">安装 GitLab</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">1.3.</span> <span class="toc-text">关闭防火墙</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9GitLab%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.</span> <span class="toc-text">修改GitLab配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%BD%BD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.5.</span> <span class="toc-text">重载配置文件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95"><span class="toc-number">2.</span> <span class="toc-text">GitLab安装目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB"><span class="toc-number">3.</span> <span class="toc-text">GitLab常用命令汇总</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E8%AE%BF%E9%97%AE%E6%B5%8B%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">GitLab访问测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E8%AE%BF%E9%97%AE%E5%AF%86%E7%A0%81"><span class="toc-number">5.</span> <span class="toc-text">配置默认访问密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86%E5%91%98%E7%99%BB%E5%BD%95"><span class="toc-number">6.</span> <span class="toc-text">管理员登录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%AF%AD%E8%A8%80"><span class="toc-number">7.</span> <span class="toc-text">设置语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E7%99%BB%E5%BD%95%E9%A1%B5%E8%87%AA%E5%8A%A8%E6%B3%A8%E5%86%8C"><span class="toc-number">8.</span> <span class="toc-text">关闭登录页自动注册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E7%99%BB%E5%BD%95%E5%85%8D%E5%AF%86%E8%AE%A4%E8%AF%81"><span class="toc-number">9.</span> <span class="toc-text">GitLab登录免密认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E5%88%9B%E5%BB%BA%E7%BE%A4%E7%BB%84"><span class="toc-number">10.</span> <span class="toc-text">GitLab创建群组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-number">11.</span> <span class="toc-text">GitLab创建项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7"><span class="toc-number">12.</span> <span class="toc-text">GitLab创建用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E4%BB%A3%E7%A0%81%E5%88%B0%E4%BB%93%E5%BA%93"><span class="toc-number">13.</span> <span class="toc-text">上传代码到仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Git-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">14.</span> <span class="toc-text">Git 命令行常用指令的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4%E5%8F%8A%E4%BF%AE%E6%94%B9%E6%93%8D%E4%BD%9C"><span class="toc-number">14.1.</span> <span class="toc-text">提交及修改操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GitLab%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD"><span class="toc-number">15.</span> <span class="toc-text">GitLab数据备份</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E5%A4%87%E4%BB%BD"><span class="toc-number">15.1.</span> <span class="toc-text">手动备份</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E5%A4%87%E4%BB%BD%E7%9B%AE%E5%BD%95"><span class="toc-number">15.1.1.</span> <span class="toc-text">更改备份目录</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%87%8D%E8%BD%BD%E9%85%8D%E7%BD%AE"><span class="toc-number">15.1.2.</span> <span class="toc-text">重载配置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%A4%87%E4%BB%BD%E7%9B%AE%E5%BD%95%E5%B9%B6%E6%8E%88%E6%9D%83"><span class="toc-number">15.1.3.</span> <span class="toc-text">创建备份目录并授权</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GitLab%E8%87%AA%E5%8A%A8%E5%A4%87%E4%BB%BD"><span class="toc-number">15.2.</span> <span class="toc-text">GitLab自动备份</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/03/01/DevOps/GitLab/GitLab%E9%83%A8%E7%BD%B2/" title="GitLab 部署">GitLab 部署</a><time datetime="2023-02-28T23:17:27.317Z" title="发表于 2023-03-01 07:17:27">2023-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/28/DevOps/Jenkins/Jenkins%E9%83%A8%E7%BD%B2/" title="Jenkins 详细部署">Jenkins 详细部署</a><time datetime="2023-02-27T16:06:45.252Z" title="发表于 2023-02-28 00:06:45">2023-02-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/27/DevOps/harbor/%E4%BD%BF%E7%94%A8docker-compose%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2harbor/" title="使用docker-compose快速部署harbor"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/internet-g811f008d9_1280.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用docker-compose快速部署harbor"/></a><div class="content"><a class="title" href="/2023/02/27/DevOps/harbor/%E4%BD%BF%E7%94%A8docker-compose%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2harbor/" title="使用docker-compose快速部署harbor">使用docker-compose快速部署harbor</a><time datetime="2023-02-27T15:15:29.183Z" title="发表于 2023-02-27 23:15:29">2023-02-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/27/DevOps/docker-compose/docker-compose%E5%AE%89%E8%A3%85/" title="docker-compose 安装"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/internet-g811f008d9_1280.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="docker-compose 安装"/></a><div class="content"><a class="title" href="/2023/02/27/DevOps/docker-compose/docker-compose%E5%AE%89%E8%A3%85/" title="docker-compose 安装">docker-compose 安装</a><time datetime="2023-02-27T15:11:12.877Z" title="发表于 2023-02-27 23:11:12">2023-02-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/27/DevOps/docker/docker%E5%AE%89%E8%A3%85/" title="Docker 安装"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/hd-wallpaper-gabaee2890_1920.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker 安装"/></a><div class="content"><a class="title" href="/2023/02/27/DevOps/docker/docker%E5%AE%89%E8%A3%85/" title="Docker 安装">Docker 安装</a><time datetime="2023-02-27T15:05:25.188Z" title="发表于 2023-02-27 23:05:25">2023-02-27</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 鲁黎明</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script src="/js/sakura.js"></script><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><script defer data-pjax src="/js/cat.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '1s');
+    arr[i].setAttribute('data-wow-offset', '100');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><!-- hexo injector body_end end -->
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
