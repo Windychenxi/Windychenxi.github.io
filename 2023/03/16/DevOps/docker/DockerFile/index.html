@@ -1,0 +1,535 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Dockerfile | 心梦无痕</title><meta name="author" content="鲁黎明"><meta name="copyright" content="鲁黎明"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="前言推荐阅读Dockerfile自动构建 Docker 镜像环境介绍DockerFile 中所用所有文件一定要和 Dockerfile 文件在同一级父目录下，可以为 Dockerfile 父目录的子目录 Dockerfile 中相对路径默认都是 Dockerfile 所在目录 Dockerfile 中一定要惜字如金，能写到一行的指令，一定要写到一行，原因是分层构建，联合挂在这一特性 Dockerf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile">
+<meta property="og:url" content="http://example.com/2023/03/16/DevOps/docker/DockerFile/index.html">
+<meta property="og:site_name" content="心梦无痕">
+<meta property="og:description" content="前言推荐阅读Dockerfile自动构建 Docker 镜像环境介绍DockerFile 中所用所有文件一定要和 Dockerfile 文件在同一级父目录下，可以为 Dockerfile 父目录的子目录 Dockerfile 中相对路径默认都是 Dockerfile 所在目录 Dockerfile 中一定要惜字如金，能写到一行的指令，一定要写到一行，原因是分层构建，联合挂在这一特性 Dockerf">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&fm=253&fmt=auto&app=138&f=JPEG.webp">
+<meta property="article:published_time" content="2023-03-16T12:46:29.916Z">
+<meta property="article:modified_time" content="2023-03-16T23:15:16.283Z">
+<meta property="article:author" content="鲁黎明">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&fm=253&fmt=auto&app=138&f=JPEG.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/03/16/DevOps/docker/DockerFile/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: 鲁黎明","link":"链接: ","source":"来源: 心梦无痕","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Dockerfile',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-17 07:15:16'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/cat.css"><link rel="stylesheet" href="https://npm.elemecdn.com/ethan4116-blog/lib/css/plane_v2.css"><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@1,300&display=swap" rel="stylesheet"><div id="myscoll"></div><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"></head><body><div id="loading-box"><div class="gear-loader"><div class="gear-loader_overlay"></div><div class="gear-loader_cogs"><div class="gear-loader_cogs__top"><div class="gear-top_part"></div><div class="gear-top_part"></div><div class="gear-top_part"></div><div class="gear-top_hole"></div></div><div class="gear-loader_cogs__left"><div class="gear-left_part"></div><div class="gear-left_part"></div><div class="gear-left_part"></div><div class="gear-left_hole"></div></div><div class="gear-loader_cogs__bottom"><div class="gear-bottom_part"></div><div class="gear-bottom_part"></div><div class="gear-bottom_part"></div><div class="gear-bottom_hole"></div></div></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">16</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="心梦无痕"><span class="site-name">心梦无痕</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Dockerfile</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-16T12:46:29.916Z" title="发表于 2023-03-16 20:46:29">2023-03-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-16T23:15:16.283Z" title="更新于 2023-03-17 07:15:16">2023-03-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Dockerfile"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><h3 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h3><h3 id="Dockerfile自动构建-Docker-镜像"><a href="#Dockerfile自动构建-Docker-镜像" class="headerlink" title="Dockerfile自动构建 Docker 镜像"></a>Dockerfile自动构建 Docker 镜像</h3><h3 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h3><p><code>DockerFile</code> 中所用所有文件一定要和 <code>Dockerfile</code> 文件在同一级父目录下，可以为 <code>Dockerfile</code> 父目录的子目录</p>
+<p><code>Dockerfile</code> 中相对路径默认都是 <code>Dockerfile</code> 所在目录</p>
+<p><code>Dockerfile</code> 中一定要惜字如金，能写到一行的指令，一定要写到一行，原因是分层构建，联合挂在这一特性</p>
+<p><code>Dockerfile</code> 中每一条指令视为一层</p>
+<p><code>Dockerfile</code> 中指明大写（约定俗成）</p>
+<h3 id="DockerFile-指令集"><a href="#DockerFile-指令集" class="headerlink" title="DockerFile 指令集"></a>DockerFile 指令集</h3><ul>
+<li><p><code>FROM</code>    指定基础镜像，并且必须是第一条指令。如果不以任何镜像为基础，那么写法为：<code>FROM scratch</code>。</p>
+<p>同时意味着接下来缩写的指令将作为镜像的第一次开始。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM &lt;image&gt;</span><br><span class="line">FROM &lt;image&gt;:&lt;tag&gt;</span><br><span class="line">FROM &lt;image&gt;:&lt;digest&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<p>三种写法，其中 <code>&lt;tag&gt;</code> 和 <code>&lt;digest&gt;</code> 是可选，如果没有选择，那么默认值为 <code>latest</code></p>
+</blockquote>
+</li>
+</ul>
+<h4 id="MASINTAINER"><a href="#MASINTAINER" class="headerlink" title="MASINTAINER"></a>MASINTAINER</h4><p> 指定维护者信息（可选）</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MAINTAINER &lt;name&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<p>新版本 <code>Docker</code> 使用 <code>LABEL</code> 指明</p>
+</blockquote>
+<hr>
+<h4 id="LABEL"><a href="#LABEL" class="headerlink" title="LABEL"></a>LABEL</h4><p>为镜像指明标签，一个 <code>Dockerfile</code> 可以有多个 <code>LABEL</code></p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">LABEL &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; &lt;key&gt;=&lt;value&gt; ...</span><br><span class="line"> 一个Dockerfile种可以有多个LABEL，如下：</span><br><span class="line"></span><br><span class="line">LABEL <span class="string">&quot;com.example.vendor&quot;</span>=<span class="string">&quot;ACME Incorporated&quot;</span></span><br><span class="line">LABEL com.example.label-with-value=<span class="string">&quot;foo&quot;</span></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL description=<span class="string">&quot;This text illustrates \</span></span><br><span class="line"><span class="string">that label-values can span multiple lines.&quot;</span></span><br><span class="line"> 但是并不建议这样写，最好就写成一行，如太长需要换行的话则使用\符号</span><br><span class="line"></span><br><span class="line">如下：</span><br><span class="line"></span><br><span class="line">LABEL multi.label1=<span class="string">&quot;value1&quot;</span> \</span><br><span class="line">multi.label2=<span class="string">&quot;value2&quot;</span> \</span><br><span class="line">other=<span class="string">&quot;value3&quot;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<p><code>LABEL</code> 会继承基础镜像中的 <code>LABEL</code>，如遇到相同的 <code>key</code>，则值覆盖</p>
+</blockquote>
+<hr>
+<h4 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h4><p>复制命令。把文件复制到镜像中，类似于 <code>SCP</code> 命令</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ADD &lt;src&gt;... &lt;dest&gt;</span><br><span class="line">ADD [<span class="string">&quot;&lt;src&gt;&quot;</span>,... <span class="string">&quot;&lt;dest&gt;&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<ul>
+<li><code>src</code> 为目录时，会自动把目录下的文件复制过去，目录本身不会被复制</li>
+<li><code>src</code> 为多文件，<code>dest</code> 一定要是一个目录</li>
+<li><code>src</code> 为 <code>URL</code>，那么 <code>ADD</code> 就类似于 <code>wget</code> 命令</li>
+</ul>
+</blockquote>
+<hr>
+<h4 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h4><p>复制命令</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">COPY &lt;src&gt;... &lt;dest&gt;</span><br><span class="line">COPY [<span class="string">&quot;&lt;src&gt;&quot;</span>,... <span class="string">&quot;&lt;dest&gt;&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<p>与 <code>ADD</code> 的区别是，<code>COPY</code> 只能复制本地文件，其它用法一致</p>
+</blockquote>
+<hr>
+<h4 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h4><p>向外暴露容器运行时的监听端口。但是 <code>EXPOSE</code> 不会使容器访问主机的端口。</p>
+<p>容器与主机建立端口映射，必须在容器启动时加上 <code>-P</code> 参数</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXPOSE &lt;port&gt;/&lt;tcp/udp&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h4><p>设置环境变量</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ENV &lt;key&gt; &lt;value&gt;		    <span class="comment">// 一次设置一个</span></span><br><span class="line">ENV &lt;key&gt;=&lt;value&gt; ...		<span class="comment">// 一次设置多个</span></span><br></pre></td></tr></table></figure>
+
+<p>使用变量方式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$varName</span><br><span class="line">$&#123;varName&#125;			       <span class="comment">// 1 和 2 相同</span></span><br><span class="line">$&#123;varName:-<span class="keyword">default</span> value&#125;   <span class="comment">// 当变量 varName 不存在时，使用默认值 value</span></span><br><span class="line">$&#123;varName:+<span class="keyword">default</span> value&#125;   <span class="comment">// 当变量 varName 存在时，使用默认值 value （不存在时，也是用默认值 value）</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h4><p>运行指定命令</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RUN &lt;command&gt;							<span class="comment">// 直接跟 shell 命令</span></span><br><span class="line">RUN [<span class="string">&quot;executable&quot;</span>, <span class="string">&quot;param1&quot;</span>, <span class="string">&quot;param2&quot;</span>]	  <span class="comment">// 函数调用</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h4><p>容器启动时默认命令或参数</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CMD [<span class="string">&quot;executable&quot;</span>,<span class="string">&quot;param1&quot;</span>,<span class="string">&quot;param2&quot;</span>]</span><br><span class="line">CMD [<span class="string">&quot;param1&quot;</span>,<span class="string">&quot;param2&quot;</span>]</span><br><span class="line">CMD command param1 param2</span><br></pre></td></tr></table></figure>
+
+<p><strong>举例：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CMD [ <span class="string">&quot;sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;echo $HOME&quot;</span> </span><br><span class="line">CMD [ <span class="string">&quot;echo&quot;</span>, <span class="string">&quot;$HOME&quot;</span> ]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<p>参数一定要用双引号，不得使用单引号。原因：<code>Docker</code> 解析是一个 <code>JSON Array</code></p>
+<p><code>RUN</code> &amp; <code>CMD</code></p>
+<p><code>RUN</code> 是构建容器时就运行的命令以及提交运行结果</p>
+<p><code>CMD</code> 是容器启动时执行的命令，在构建时并不运行</p>
+</blockquote>
+<hr>
+<h4 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h4><p>容器启动时运行的启动命令</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ENTRYPOINT [<span class="string">&quot;executable&quot;</span>, <span class="string">&quot;param1&quot;</span>, <span class="string">&quot;param2&quot;</span>]   <span class="comment">// EXEC调用，可在 docker run 启动时传递参数	</span></span><br><span class="line">ENTRYPOINT command param1 param2				<span class="comment">// shell 命令</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<p><code>CMD</code> &amp; <code>ENTRYPOINT</code></p>
+<p>相同点：</p>
+<p>​    只能写一条，多条最后一条生效</p>
+<p>​    容器启动时才运行，运行时机相同</p>
+<p>不同点：</p>
+<p>​    <code>ENTRYPOINT</code> 不会被运行的 <code>command</code> 覆盖，但 <code>CMD</code> 则会被覆盖</p>
+<p>​    如果在 <code>Dockerfile</code> 中同时写了 <code>ENTRYPOINT</code> 和 <code>CMD</code>， 并且 <code>CMD</code> 指令不是一个完整的可执行命令，那么<code>CMD</code> 指定的内容将会作为 <code>ENTRYPOINT</code> 的参数，见<code>示例1</code>。</p>
+<p>​    如果在 <code>Dockerfile</code> 中同时写了 <code>ENTRYPOINT</code> 和 <code>CMD</code>，并且 <code>CMD</code> 是一个完整的可执行命令，那么 <code>CMD</code>会相互覆盖，谁在最后谁生效，见<code>示例2</code>。</p>
+</blockquote>
+<p><strong>示例1：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;top&quot;</span>, <span class="string">&quot;-b&quot;</span>]</span><br><span class="line">CMD [<span class="string">&quot;-c&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p><strong>实例2：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;top&quot;</span>, <span class="string">&quot;-b&quot;</span>]</span><br><span class="line">CMD ls -al</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="VOLUME"><a href="#VOLUME" class="headerlink" title="VOLUME"></a>VOLUME</h4><p>挂载功能，可将宿主机目录挂载到容器中。持久化 <code>Docker</code> 容器中的数据</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VOLUME [<span class="string">&quot;/data&quot;</span>]	<span class="comment">// [&quot;/data&quot;] 可以是一个 JsonArray，也可以是多个值</span></span><br><span class="line"></span><br><span class="line">VOLUME [<span class="string">&quot;/var/log/&quot;</span>]</span><br><span class="line">VOLUME /var/log</span><br><span class="line">VOLUME /var/log /var/db</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="USER"><a href="#USER" class="headerlink" title="USER"></a>USER</h4><p>设置启动容器的用户。可以使用户名或 <code>UID</code></p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">USER daemo</span><br><span class="line">USER UID</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong></p>
+<p>如果设置了容器以 <code>daemon</code> 用户去运行，那么<code>RUN</code>、<code>CMD</code> 和 <code>ENTRYPOINT</code> 都会以这个用户去运行，使用这个命令一定要确认容器中拥有这个用户，并且拥有足够权限</p>
+</blockquote>
+<hr>
+<h4 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h4><p>设置工作目录。对<code>RUN</code>、<code>CMD</code>、<code>ENTRYPOINT</code>、<code>COPY</code>、<code>ADD</code> 生效。如果不存在则会创建，也可以设置多次。</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WORKDIR /a</span><br><span class="line">WORKDIR b</span><br><span class="line">WORKDIR c</span><br><span class="line">RUN pwd</span><br><span class="line"><span class="comment">// /a/b/c</span></span><br></pre></td></tr></table></figure>
+
+<p><code>WORKDIR</code> 可以解析环境变量</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ENV DIRPATH /path</span><br><span class="line">WORKDIR $DIRPATH/$DIRNAME</span><br><span class="line">RUN pwd</span><br><span class="line"><span class="comment">// /path/$DIRNAME</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="ARG"><a href="#ARG" class="headerlink" title="ARG"></a>ARG</h4><p>设置变量命令。<code>ARG</code> 命令定义了一个变量，在 <code>Docker build</code> 创建镜像的时候，使用 <code>--build-arg=</code> 来指定参数。</p>
+<p>如果用户在 build 镜像时，制定了一个参数没有定义在 <code>Dockerfile</code> 中，那么将会有一个 <code>Warning</code>，提示如下：</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Warning] One <span class="keyword">or</span> more build-args [foo] were <span class="keyword">not</span> consumed.</span><br></pre></td></tr></table></figure>
+
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FROM busybox</span><br><span class="line">ARG user1</span><br><span class="line">ARG buildno</span><br><span class="line"></span><br><span class="line">ARG user1=someuser	<span class="comment">// 设置默认值</span></span><br><span class="line">ARG buildno=<span class="number">1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="ONBUILD"><a href="#ONBUILD" class="headerlink" title="ONBUILD"></a>ONBUILD</h4><p>可以理解为声明周期钩子。这个命令只对当前镜像的子镜像生效。</p>
+<p>例如：在子镜像中的 <code>Dockerfile</code> 中添加：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ONBUILD RUN ls -al</span><br></pre></td></tr></table></figure>
+
+<p><code>ls -al</code> 命令不会在子镜像构建或启动时执行</p>
+<p>而其父镜像基于该子镜像构建时，那么 <code>ls -al</code> 命令将会被执行</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ONBUILD [INSTRUCTION]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="STOPSIGNAL"><a href="#STOPSIGNAL" class="headerlink" title="STOPSIGNAL"></a>STOPSIGNAL</h4><p>当容器停止时，给系统发送指令，默认 <code>15</code></p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">STOPSIGNAL signal</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="HEALTHCHECK"><a href="#HEALTHCHECK" class="headerlink" title="HEALTHCHECK"></a>HEALTHCHECK</h4><p>容器健康状况检查命令</p>
+<p><strong>语法：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HEALTHCHECK [OPTIONS] CMD command		<span class="comment">// 在容器内部运行一个命令来检查容器的健康状况</span></span><br><span class="line">HEALTHCHECK NONE					   <span class="comment">// 在基础镜像中取消健康检查命令</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>说明</strong></p>
+<ul>
+<li><p><code>–interval=DURATION</code> 两次检查默认的时间间隔为<code>30秒</code></p>
+</li>
+<li><p><code>–timeout=DURATION</code> 健康检查命令运行超时时长，默认<code>30秒</code></p>
+</li>
+<li><p><code>–retries=N</code> 当连续失败指定次数后，则容器被认为是不健康的，状态为<code>unhealthy</code>，默认次数是<code>3</code></p>
+</li>
+</ul>
+<p><code>HEALTHCHECK</code> 命令只能出现一次，如果出现了多次，只有最后一个生效。</p>
+<p><code>CMD</code> 后边的命令的返回值决定了本次健康检查是否成功，具体的返回值如下：</p>
+<ul>
+<li><p><code>0</code>  <code>success</code> - 表示容器是健康的</p>
+</li>
+<li><p><code>1</code>  <code>unhealthy</code> - 表示容器已经不能工作了</p>
+</li>
+<li><p><code>2</code>  <code>reserved</code> - 保留值</p>
+</li>
+</ul>
+</blockquote>
+<p><strong>示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HEALTHCHECK --interval=<span class="number">5</span>m --timeout=<span class="number">3</span>s \		<span class="comment">// 两次检查间隔5分钟，超时时间3秒</span></span><br><span class="line">CMD curl -f http:<span class="comment">//localhost/ || exit 1			// 健康检查命令</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="单阶段构建镜像"><a href="#单阶段构建镜像" class="headerlink" title="单阶段构建镜像"></a>单阶段构建镜像</h3><p>现在都是前后端分离，这里也是进行前后端分开构建镜像说明。</p>
+<h4 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h4><p>构建一个镜像，需要寻找合适的基底镜像。前端使用 <code>Vue</code>，那么就要了解 <code>Vue</code> 运行所需要的环境。</p>
+<p><code>Vue</code> 需要使用 <code>Node.js</code> 进行解析，那么就需要安装 <code>Node.js</code> 的环境。安装 <code>Node.js</code> 很慢，而且安装不一定安装得完全。考虑到最终上线，还是要使用容器进行创建，所以去下载一个 <code>Node.js</code> 的环境。这里使用的是<code>node:16.15.0</code> 版本。</p>
+<h5 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h5><p>将 <code>Node.js</code> 镜像下载到本地</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull node：<span class="number">16.15</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+
+<p>下载完毕后，运行一个 <code>Node.js</code> 的环境。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd --name webserver-vue -p <span class="number">8080</span>:<span class="number">8080</span> node:<span class="number">16.15</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="下载代码"><a href="#下载代码" class="headerlink" title="下载代码"></a>下载代码</h5><p>查看容器</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container ls</span><br></pre></td></tr></table></figure>
+
+<p>进入到容器内</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -id webserver-vue bash</span><br></pre></td></tr></table></figure>
+
+<p>需要在容器里运行 <code>Vue</code> 的代码，由研发提供代码，怎么去获取代码？到 <code>Gitlab</code> 管理仓库下载</p>
+<p>在容器里使用 <code>Git</code> 进行下载到本地</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/hloins/webserver-vue.git</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h5><p>可以得到一个 <code>webserver-vue</code> 的目录，进入到 <code>webserver-vue</code> 目录</p>
+<p>要运行 <code>Vue</code> 项目，首先需要安装依赖，将依赖包安装到本地</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<h5 id="启动项目"><a href="#启动项目" class="headerlink" title="启动项目"></a>启动项目</h5><p>启动 <code>Vue</code> 项目</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run serve</span><br></pre></td></tr></table></figure>
+
+<h5 id="访问项目"><a href="#访问项目" class="headerlink" title="访问项目"></a>访问项目</h5><p>启动成功后，浏览器访问 <code>8080</code> 端口，可以看到  <code>Vue</code> 项目已经启动成功。</p>
+<h5 id="Dockerfile-构建"><a href="#Dockerfile-构建" class="headerlink" title="Dockerfile 构建"></a>Dockerfile 构建</h5><p>首先清空容器</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker rm -f `docker ps -a -q`	<span class="comment">// 清空容器</span></span><br><span class="line">    </span><br><span class="line">docker ps -a	<span class="comment">// 查看已清空</span></span><br></pre></td></tr></table></figure>
+
+<p>创建工作目录</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /opt/docker-images/webserver-vue</span><br></pre></td></tr></table></figure>
+
+<p>在该目录编写 <code>Dockerfile</code> （<strong>注意首字母大写，且没有后缀</strong>）</p>
+<p>所有的 <code>Dockerfile</code> 都叫 <code>Dockerfile</code>。区分不同镜像的 <code>Dockerfile</code>，按上级目录名称进行区分</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">16.15</span>.<span class="number">0</span>											<span class="comment"># 基底镜像</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> git <span class="built_in">clone</span> https://gitee.com/mirschao/webserver-vue.git	    <span class="comment"># 下载代码</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> webserver-vue                                           <span class="comment"># 工作目录</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install                                                 <span class="comment"># 安装依赖</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8080</span>                                                     <span class="comment"># 暴露端口</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;run&quot;</span>, <span class="string">&quot;serve&quot;</span>]                                     <span class="comment"># 启动项目(容器启动时运行)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>触发构建</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd /opt/docker-images/webserver</span><br><span class="line">$ docker build -t webserver:v1<span class="number">.0</span> .     <span class="comment">// 指定自定义镜像的名称 和 tag，使用当前目录下的 Dockerfile 进行构建</span></span><br></pre></td></tr></table></figure>
+
+<p>运行镜像</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd --name webserver-vue-porject -p <span class="number">8080</span>:<span class="number">8080</span> webserver-vue:v1<span class="number">.0</span></span><br></pre></td></tr></table></figure>
+
+<p>查看容器</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps -a</span><br></pre></td></tr></table></figure>
+
+<p>访问项目</p>
+<p>浏览器访问8080端口，访问运行的项目</p>
+<h4 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h4></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">鲁黎明</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/03/16/DevOps/docker/DockerFile/">http://example.com/2023/03/16/DevOps/docker/DockerFile/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">心梦无痕</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/03/12/DevOps/Jenkins/Jenkins%20pipeline%E6%B5%81%E6%B0%B4%E7%BA%BF/" title="Jenkins pipeline 流水线"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Jenkins pipeline 流水线</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/u=2134337785,3078619524&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG.webp" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">鲁黎明</div><div class="author-info__description">快乐每一天</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">16</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xxxxx" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:xxxxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">如果阅读过程中遇到了问题，请及时评论或者留言，看到了会在第一时间给出回复。</div></div><div class="xpand" style="height:200px;"><canvas class="illo" width="800" height="800" style="max-width: 200px; max-height: 200px; touch-action: none; width: 640px; height: 640px;"></canvas></div><script src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/twopeople1.js"></script><script src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/zdog.dist.js"></script><script id="rendered-js" src="https://npm.elemecdn.com/ethan4116-blog/lib/js/other/two-people/twopeople.js"></script><style>.card-widget.card-announcement {
+margin: 0;
+align-items: center;
+justify-content: center;
+text-align: center;
+}
+canvas {
+display: block;
+margin: 0 auto;
+cursor: move;
+}</style><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BB"><span class="toc-number">2.</span> <span class="toc-text">推荐阅读</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockerfile%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BA-Docker-%E9%95%9C%E5%83%8F"><span class="toc-number">3.</span> <span class="toc-text">Dockerfile自动构建 Docker 镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.</span> <span class="toc-text">环境介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DockerFile-%E6%8C%87%E4%BB%A4%E9%9B%86"><span class="toc-number">5.</span> <span class="toc-text">DockerFile 指令集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#MASINTAINER"><span class="toc-number">5.1.</span> <span class="toc-text">MASINTAINER</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LABEL"><span class="toc-number">5.2.</span> <span class="toc-text">LABEL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ADD"><span class="toc-number">5.3.</span> <span class="toc-text">ADD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#COPY"><span class="toc-number">5.4.</span> <span class="toc-text">COPY</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#EXPOSE"><span class="toc-number">5.5.</span> <span class="toc-text">EXPOSE</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ENV"><span class="toc-number">5.6.</span> <span class="toc-text">ENV</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RUN"><span class="toc-number">5.7.</span> <span class="toc-text">RUN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CMD"><span class="toc-number">5.8.</span> <span class="toc-text">CMD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ENTRYPOINT"><span class="toc-number">5.9.</span> <span class="toc-text">ENTRYPOINT</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#VOLUME"><span class="toc-number">5.10.</span> <span class="toc-text">VOLUME</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#USER"><span class="toc-number">5.11.</span> <span class="toc-text">USER</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WORKDIR"><span class="toc-number">5.12.</span> <span class="toc-text">WORKDIR</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ARG"><span class="toc-number">5.13.</span> <span class="toc-text">ARG</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ONBUILD"><span class="toc-number">5.14.</span> <span class="toc-text">ONBUILD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#STOPSIGNAL"><span class="toc-number">5.15.</span> <span class="toc-text">STOPSIGNAL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HEALTHCHECK"><span class="toc-number">5.16.</span> <span class="toc-text">HEALTHCHECK</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E9%98%B6%E6%AE%B5%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="toc-number">6.</span> <span class="toc-text">单阶段构建镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF"><span class="toc-number">6.1.</span> <span class="toc-text">前端</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83"><span class="toc-number">6.1.1.</span> <span class="toc-text">准备环境</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E4%BB%A3%E7%A0%81"><span class="toc-number">6.1.2.</span> <span class="toc-text">下载代码</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-number">6.1.3.</span> <span class="toc-text">安装依赖</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE"><span class="toc-number">6.1.4.</span> <span class="toc-text">启动项目</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E9%A1%B9%E7%9B%AE"><span class="toc-number">6.1.5.</span> <span class="toc-text">访问项目</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Dockerfile-%E6%9E%84%E5%BB%BA"><span class="toc-number">6.1.6.</span> <span class="toc-text">Dockerfile 构建</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8E%E7%AB%AF"><span class="toc-number">6.2.</span> <span class="toc-text">后端</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/03/16/DevOps/docker/DockerFile/" title="Dockerfile">Dockerfile</a><time datetime="2023-03-16T12:46:29.916Z" title="发表于 2023-03-16 20:46:29">2023-03-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/03/12/DevOps/Jenkins/Jenkins%20pipeline%E6%B5%81%E6%B0%B4%E7%BA%BF/" title="Jenkins pipeline 流水线">Jenkins pipeline 流水线</a><time datetime="2023-03-12T02:22:20.003Z" title="发表于 2023-03-12 10:22:20">2023-03-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/03/01/DevOps/GitLab/GitLab%E9%83%A8%E7%BD%B2/" title="GitLab 部署">GitLab 部署</a><time datetime="2023-02-28T23:17:27.317Z" title="发表于 2023-03-01 07:17:27">2023-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/02/28/DevOps/Jenkins/Jenkins%E9%83%A8%E7%BD%B2/" title="Jenkins 详细部署">Jenkins 详细部署</a><time datetime="2023-02-27T16:06:45.252Z" title="发表于 2023-02-28 00:06:45">2023-02-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/27/DevOps/harbor/%E4%BD%BF%E7%94%A8docker-compose%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2harbor/" title="使用docker-compose快速部署harbor"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/loading.gif" data-original="https://butterfly-1316798368.cos.ap-nanjing.myqcloud.com/images/internet-g811f008d9_1280.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用docker-compose快速部署harbor"/></a><div class="content"><a class="title" href="/2023/02/27/DevOps/harbor/%E4%BD%BF%E7%94%A8docker-compose%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2harbor/" title="使用docker-compose快速部署harbor">使用docker-compose快速部署harbor</a><time datetime="2023-02-27T15:15:29.183Z" title="发表于 2023-02-27 23:15:29">2023-02-27</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By 鲁黎明</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script src="/js/sakura.js"></script><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><script defer data-pjax src="/js/cat.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"]):not([href="/music/"]):not([href="/no-pjax/"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '1s');
+    arr[i].setAttribute('data-wow-offset', '100');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><!-- hexo injector body_end end -->
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body></html>
