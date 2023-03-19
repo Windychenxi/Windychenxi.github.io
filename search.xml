@@ -20,9 +20,9 @@
       
         <tags>
             
-            <tag> Dockerfile </tag>
-            
             <tag> Docker </tag>
+            
+            <tag> Dockerfile </tag>
             
         </tags>
       
@@ -31,7 +31,7 @@
     
     
     <entry>
-      <title>Jenkins pipeline 流水线</title>
+      <title>Jenkins pipeline 流水线自动化构建</title>
       <link href="/2023/03/12/DevOps/Jenkins/Jenkins%20pipeline%E6%B5%81%E6%B0%B4%E7%BA%BF/"/>
       <url>/2023/03/12/DevOps/Jenkins/Jenkins%20pipeline%E6%B5%81%E6%B0%B4%E7%BA%BF/</url>
       
@@ -47,9 +47,11 @@
       
         <tags>
             
-            <tag> Pipeline </tag>
+            <tag> Jenkins </tag>
             
-            <tag> Jenkins自动化 </tag>
+            <tag> Gitlab </tag>
+            
+            <tag> Pipeline </tag>
             
         </tags>
       
